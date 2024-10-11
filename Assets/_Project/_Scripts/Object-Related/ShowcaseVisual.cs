@@ -1,45 +1,59 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ShowcaseVisual : MonoBehaviour
+public class ShowcaseVisual : MonoBehaviour, IResettable
 {
     public Animator animator;
-    public float distance = 1f;
-    public DistanceChecker distanceChecker;
 
-    public bool isActive = false;
+    public bool isActive;
 
-    public UnityEvent OnActivate;
-    public UnityEvent OnDeactivate;
+    public UnityEvent OnPlayAnimation;
+    public UnityEvent OnResetAnimation;
+    public UnityEvent OnCompleteAnimation;
+    
+    private Sequence _sequence;
 
     // Start is called before the first frame update
-    
-    private void Update()
+
+    private void Start()
     {
-        if (distanceChecker.currentDistance < distance)
-        {
-            ActivateAnimation();
-        }
+
     }
 
-    public void ActivateAnimation()
+    public void PlayAnimation()
     {
         if (isActive) return;
         
-        animator.SetBool("Activate", true);
         isActive = true;
-        OnActivate.Invoke();
+        OnPlayAnimation.Invoke();
+
+        animator.SetBool("Activate", true);
     }
 
-    public void DeactivateAnimation()
+    public void ResetAnimation()
     {
-        if (!isActive) return;
+        isActive = false;
+        OnResetAnimation.Invoke();
         
         animator.SetBool("Activate", false);
-        isActive = false;
-        OnDeactivate.Invoke();
+    }
+
+    public void ToggleDebug(bool isOn)
+    {
+        
+    }
+
+    public void OnReset()
+    {
+        ResetAnimation();
+    }
+
+    public void OnCompleteAnimationInAnimator()
+    {
+        OnCompleteAnimation.Invoke();
     }
 }

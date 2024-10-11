@@ -20,23 +20,39 @@ public class ShowcaseObjectData
     public ShowcaseObjectData(ShowcasePrefabConfig prefabConfig, Transform transform)
     {
         this.prefabConfig = prefabConfig;
-        position = transform.position;
-        rotation = transform.rotation;
+        position = transform.localPosition;
+        rotation = transform.localRotation;
     }
 }
 
 public class ShowcaseObject : MonoBehaviour
 {
     public ShowcasePrefabConfig prefabConfig;
+    public GameObject highlightMaterial;
     
     public void LoadData(ShowcaseObjectData data)
     {
-        transform.position = data.position;
-        transform.rotation = data.rotation;
+        transform.localPosition = data.position;
+        transform.localRotation = data.rotation;
     }
 
     public ShowcaseObjectData GetData()
     {
         return new ShowcaseObjectData(prefabConfig, transform);
+    }
+
+    void Awake()
+    {
+        highlightMaterial.SetActive(false);
+    }
+    
+    public void OnSelect()
+    {
+        highlightMaterial.SetActive(true);
+    }
+
+    public void OnDeselect()
+    {
+        highlightMaterial.SetActive(false);
     }
 }

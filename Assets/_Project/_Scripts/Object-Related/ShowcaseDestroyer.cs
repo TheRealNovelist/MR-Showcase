@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ShowcaseDestroyer : MonoBehaviour
 {
-    private ShowcaseTransform _currentShowcase;
+    private ShowcaseObject _currentShowcase;
 
     private void OnDisable()
     {
@@ -24,7 +24,7 @@ public class ShowcaseDestroyer : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("SpawnedObject")))
         {
-            if (hit.collider.TryGetComponent(out ShowcaseTransform data))
+            if (hit.collider.TryGetComponent(out ShowcaseObject data))
             {
                 if (_currentShowcase != data)
                 {   
@@ -52,7 +52,7 @@ public class ShowcaseDestroyer : MonoBehaviour
         if (OVRInput.GetDown(OVRInput.RawButton.A))
         {
             if (_currentShowcase)
-                Destroy(_currentShowcase.gameObject);
+                ShowcaseObjectManager.Instance.RemoveShowcaseObject(_currentShowcase);
         }
     }
 }

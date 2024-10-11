@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using Meta.XR.MRUtilityKit;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,15 +47,16 @@ public class Menu : MonoBehaviour
         
         TurnOffMenu();
     }
-
+    
     private void ResetAll()
     {
-        foreach (var objectData in GetAllObject<ShowcaseVisual>())
+        foreach (IResettable resettable in FindObjectsOfType<MonoBehaviour>().OfType<IResettable>())
         {
-            objectData.DeactivateAnimation();
+            resettable.OnReset();
         }
         
         AudioManager.StopAll();
+        DOTween.KillAll();
     }
     
     private void Update()
@@ -69,6 +71,11 @@ public class Menu : MonoBehaviour
             {
                 TurnOnMenu();
             }
+        }
+
+        if (OVRInput.GetDown(OVRInput.RawButton.X))
+        {
+            ResetAll();
         }
     }
 
@@ -102,6 +109,6 @@ public class Menu : MonoBehaviour
     
     private List<T> GetAllObject<T>() where T : Component
     {
-        return FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).ToList();
+        return FindObjectsOfType<T>().ToList();
     }
 }

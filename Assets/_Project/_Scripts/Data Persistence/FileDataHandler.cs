@@ -15,7 +15,7 @@ public class FileDataHandler
         _dataFileName = dataFileName;
     }
 
-    public void Save(GameData data)
+    public void Save(GameData data, bool logError = true)
     {
         string fullPath = Path.Combine(_dataDirPath, _dataFileName);
 
@@ -32,14 +32,17 @@ public class FileDataHandler
                     writer.Write(dataToStore);
                 }
             }
+            if(logError)
+                DataPersistenceManager.Instance.LogSave("Save successful");
         }
         catch (Exception e)
         {
-            Debug.LogError("Error occured when trying to save data to file: " + fullPath + "\n" + e);
+            if (logError)
+                DataPersistenceManager.Instance.LogSave("Save failed");
         }
     }
 
-    public GameData Load()
+    public GameData Load(bool logError = true)
     {
         string fullPath = Path.Combine(_dataDirPath, _dataFileName);
 
@@ -58,10 +61,13 @@ public class FileDataHandler
                 }
 
                 loadedData = JsonUtility.FromJson<GameData>(dataToLoad);
+                if (logError)
+                    DataPersistenceManager.Instance.LogLoad("Load successful");
             }
             catch (Exception e)
             {
-                Debug.LogError("Error occured when trying to load data from file: " + fullPath + "\n" + e);
+                if(logError)
+                    DataPersistenceManager.Instance.LogLoad("Load failed");
             }
         }
         return loadedData;

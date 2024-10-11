@@ -18,7 +18,7 @@ public class ShowcasePrefabSpawner : MonoBehaviour
 
     private float _angle;
     private Transform _player;
-    private SceneState _currentState;
+    private SceneState _currentState = SceneState.AcquiringPosition;
     private Vector3 _storedPosition;
     private GameObject _currentPreview;
     
@@ -107,11 +107,7 @@ public class ShowcasePrefabSpawner : MonoBehaviour
 
     private void Apply()
     {
-        ShowcaseObjectManager.Instance.CreateShowcaseObject(
-            new ShowcaseObjectData(
-                showcasePrefabConfig, 
-                _storedPosition, 
-                _currentPreview.transform.rotation));
+        ShowcaseObjectManager.Instance.CreateShowcaseObject(showcasePrefabConfig, _storedPosition, _currentPreview.transform.rotation);
         
         _storedPosition = Vector3.zero;
     }

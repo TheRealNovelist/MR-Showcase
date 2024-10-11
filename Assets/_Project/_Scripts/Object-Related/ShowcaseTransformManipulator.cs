@@ -1,34 +1,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[Serializable]
-public class ObjectGroup
-{
-    public string groupName;
-    public float height = 1f;
-    public float scale = 1f;
 
-    public ObjectGroup(string groupName, float height = 1f, float scale = 1f)
-    {
-        this.groupName = groupName;
-        this.height = height;
-        this.scale = scale;
-    }
-}
-
-public class ShowcaseTransformManipulator : Singleton<ShowcaseTransformManipulator>
+public class ShowcaseTransformManipulator : MonoBehaviour
 {
     [Header("Group")]
     public Button prevGroupButton;
     public Button nextGroupButton;
     public TMP_Text groupText;
-    public List<ObjectGroup> groups;
+    public List<ShowcaseTransformGroup> groups;
     public int index = 0;
+
+    private ShowcaseTransformGroup _currentGroup;
     
     [Header("Height")]
     public float stepHeight = 0.1f;
@@ -46,85 +35,58 @@ public class ShowcaseTransformManipulator : Singleton<ShowcaseTransformManipulat
 
     private void Start()
     {
-        groupText.text = groups[index].groupName;
-        
-        heightText.text = $"{groups[index].height}";
-        scaleText.text = $"{groups[index].scale}";
-        
+        ChangeGroup(groups[index]);
+
         prevGroupButton.onClick.AddListener(() => SwitchGroup(-1));
         nextGroupButton.onClick.AddListener(() => SwitchGroup(1));
-
-        upHeightButton.onClick.AddListener(() => AddHeight(groups[index].groupName, stepHeight));
-        downHeightButton.onClick.AddListener(() => AddHeight(groups[index].groupName, -stepHeight));
         
-        upScaleButton.onClick.AddListener(() => AddScale(groups[index].groupName, stepScale));
-        downScaleButton.onClick.AddListener(() => AddScale(groups[index].groupName, -stepScale));
-    }
-
-    public float GetHeight(string group)
-    {
-        return GetGroup(group).height;
-    }
-    
-    public void SetHeight(string group, float newHeight)
-    {
-        ObjectGroup objectGroup = GetGroup(group);
-        objectGroup.height = newHeight;
-        heightText.text = $"{objectGroup.height}";
-        foreach (ShowcaseTransform objectData in GetAllObject<ShowcaseTransform>().Where(objectData => objectData.group == group))
+        upHeightButton.onClick.AddListener(() =>
         {
-            objectData.SetHeight(objectGroup.height);
-        }
-    }
-    
-    public void AddHeight(string group, float increment)
-    {
-        ObjectGroup objectGroup = GetGroup(group);
-        objectGroup.height += increment;
-        heightText.text = $"{objectGroup.height}";
-        foreach (ShowcaseTransform objectData in GetAllObject<ShowcaseTransform>().Where(objectData => objectData.group == group))
+            if (_currentGroup) _currentGroup.Height += stepHeight;
+        });
+        downHeightButton.onClick.AddListener(() =>
         {
-            objectData.SetHeight(objectGroup.height);
-        }
-    }
-
-    public float GetScale(string group)
-    {
-        return GetGroup(group).scale;
-    }
-    
-    public void SetScale(string group, float newScale)
-    {
-        ObjectGroup objectGroup = GetGroup(group);
-        objectGroup.scale = newScale;
-        scaleText.text = $"{objectGroup.scale}";
-        foreach (ShowcaseTransform objectData in GetAllObject<ShowcaseTransform>().Where(objectData => objectData.group == group))
-        {
-            objectData.SetScale(objectGroup.scale);
-        }
-    }
-    
-    public void AddScale(string group, float increment)
-    {
-        ObjectGroup objectGroup = GetGroup(group);
-        objectGroup.scale += increment;
-        scaleText.text = $"{objectGroup.scale}";
-        foreach (ShowcaseTransform objectData in GetAllObject<ShowcaseTransform>().Where(objectData => objectData.group == group))
-        {
-            objectData.SetScale(objectGroup.scale);
-        }
-    }
-
-    public ObjectGroup GetGroup(string group)
-    {
-        ObjectGroup objectGroup = groups.FirstOrDefault(x => x.groupName == group);
-        if (objectGroup == null)
-        {
-            objectGroup = new ObjectGroup(group);
-            groups.Add(objectGroup);
-        }
+            if (_currentGroup) _currentGroup.Height -= stepHeight;
+        });
         
-        return objectGroup;
+        upScaleButton.onClick.AddListener(() =>
+        {
+            if (_currentGroup) _currentGroup.Scale += stepScale;
+        });
+        downScaleButton.onClick.AddListener(() =>
+        {
+            if (_currentGroup) _currentGroup.Scale -= stepScale;
+        });
+    }
+
+    private void OnDestroy()
+    {
+        if (_currentGroup) UnbindGroup(_currentGroup);
+    }
+
+    public void ChangeGroup(ShowcaseTransformGroup group)
+    {
+        if (_currentGroup) UnbindGroup(_currentGroup);
+
+        _currentGroup = group;
+        BindGroup(_currentGroup);
+        
+        groupText.text = _currentGroup.groupName;
+        
+        ChangeHeightText(_currentGroup.Height);
+        ChangeScaleText(_currentGroup.Scale);
+    }
+    
+    public void BindGroup(ShowcaseTransformGroup group)
+    {
+        group.OnHeightChanged += ChangeHeightText;
+        group.OnScaleChanged += ChangeScaleText;
+    }
+
+    public void UnbindGroup(ShowcaseTransformGroup group)
+    {
+        group.OnHeightChanged -= ChangeHeightText;
+        group.OnScaleChanged -= ChangeScaleText;
     }
     
     public void SwitchGroup(int increment)
@@ -136,13 +98,10 @@ public class ShowcaseTransformManipulator : Singleton<ShowcaseTransformManipulat
             newIndex = 0;
 
         index = newIndex;
-        groupText.text = groups[index].groupName;
-        heightText.text = $"{groups[index].height}";
-        scaleText.text = $"{groups[index].scale}";
+        
+        ChangeGroup(groups[index]);
     }
 
-    private List<T> GetAllObject<T>() where T : Component
-    {
-        return FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).ToList();
-    }
+    public void ChangeHeightText(float height) => heightText.text = $"{Mathf.Round(height * 100) / 100}";
+    public void ChangeScaleText(float scale) => scaleText.text = $"{Mathf.Round(scale * 100) / 100}";
 }

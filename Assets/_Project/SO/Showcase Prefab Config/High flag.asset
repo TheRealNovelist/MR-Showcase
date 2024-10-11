@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f33b7cb7b1b4fec98187b3620afd4ce, type: 3}
+  m_Name: High flag
+  m_EditorClassIdentifier: 
+  itemName: "C\u1EDD cao"
+  prefab: {fileID: 4247401428811919952, guid: ffe561ac5ce11584c98e0fcef82c40d1, type: 3}
+  previewPrefab: {fileID: 3139581241513295256, guid: 556bcf065be576a4cbaec175c05cdc33,
+    type: 3}

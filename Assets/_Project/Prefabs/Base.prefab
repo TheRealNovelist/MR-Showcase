@@ -152,7 +152,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2527141063940852254}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
@@ -444,8 +444,8 @@ GameObject:
   - component: {fileID: 2595748326609913371}
   - component: {fileID: 7445724996132595119}
   - component: {fileID: 5766291733988560957}
-  - component: {fileID: 6153561104781314848}
   - component: {fileID: 3261684641877423737}
+  - component: {fileID: 461867852808124289}
   m_Layer: 3
   m_Name: Base
   m_TagString: Untagged
@@ -484,6 +484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabConfig: {fileID: 0}
+  highlightMaterial: {fileID: 6611166312973843276}
 --- !u!114 &9041649915091806371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -498,10 +499,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 7151020638616847623}
   trackingID: MainCamera
-  range: 0
+  range: 1
   OnInRange:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2595748326609913371}
+        m_TargetAssemblyTypeName: ShowcaseVisual, Assembly-CSharp
+        m_MethodName: PlayAnimation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnOutOfRange:
     m_PersistentCalls:
       m_Calls: []
@@ -518,9 +531,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 290ecc1bb2347d548b9d5d6f5e5770d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  group: "\u1EA2nh th\u01B0\u1EDDng"
+  transformGroup: {fileID: 11400000, guid: a6c003f016e4e6f408c96555736c0ae9, type: 2}
   root: {fileID: 2527141063940852254}
-  highlightMaterial: {fileID: 6611166312973843276}
 --- !u!114 &2595748326609913371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -533,11 +545,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2bfcac1344a1504bb6ee3cef9d7eff5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 6153561104781314848}
-  distance: 1
-  distanceChecker: {fileID: 9041649915091806371}
+  animator: {fileID: 461867852808124289}
   isActive: 0
-  OnActivate:
+  OnPlayAnimation:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7445724996132595119}
@@ -552,7 +562,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnDeactivate:
+  OnResetAnimation:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCompleteAnimation:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &7445724996132595119
@@ -567,13 +580,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2af7ba1b3dc794d438d1242d9678d840, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delay: 0
   source: {fileID: 8888357209661990894}
   clip: {fileID: 0}
-  distanceChecker: {fileID: 9041649915091806371}
-  distanceToStartQuery: 0.5
-  distanceToStop: 3
+  delay: 0
   stopAllOtherAudio: 1
+  doFadeInAudio: 0
+  fadeInTime: 0.5
+  doFadeOutAudio: 1
+  distanceChecker: {fileID: 9041649915091806371}
+  startFadeDistance: 1
+  fadeOutRange: 1
+  OnAudioFinish:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &5766291733988560957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,6 +620,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 2595748326609913371}
+        m_TargetAssemblyTypeName: ShowcaseVisual, Assembly-CSharp
+        m_MethodName: ToggleDebug
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   TurnOffEvent:
     m_PersistentCalls:
       m_Calls:
@@ -616,27 +647,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!95 &6153561104781314848
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5574151386019581113}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8a706ef9b1489e54bad5b33fd36f580a, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+      - m_Target: {fileID: 2595748326609913371}
+        m_TargetAssemblyTypeName: ShowcaseVisual, Assembly-CSharp
+        m_MethodName: ToggleDebug
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!65 &3261684641877423737
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -658,6 +680,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2, z: 0.1}
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!95 &461867852808124289
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5574151386019581113}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c06bf2ca7d6c78f4cbac5d2912247477, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5876879290031898852
 GameObject:
   m_ObjectHideFlags: 0
@@ -670,9 +713,8 @@ GameObject:
   - component: {fileID: 4912810984273560398}
   - component: {fileID: 7467982114492661797}
   - component: {fileID: 3725748037143994363}
-  - component: {fileID: 8723086859294544227}
   m_Layer: 3
-  m_Name: Canvas
+  m_Name: MainCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -689,7 +731,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.001, y: 0.001, z: 0.001}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 7144687599475011003}
   m_Father: {fileID: 4253194066786576618}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -755,19 +798,6 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
---- !u!114 &8723086859294544227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5876879290031898852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b18f37e72f3fed44bffaf87515ae3ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  floatStrength: 0.01
 --- !u!1 &6611166312973843276
 GameObject:
   m_ObjectHideFlags: 0
@@ -851,3 +881,52 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8388077324845608328
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7144687599475011003}
+  - component: {fileID: 397250983848910143}
+  m_Layer: 3
+  m_Name: RootHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7144687599475011003
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8388077324845608328}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7512614954544987940}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &397250983848910143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8388077324845608328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b18f37e72f3fed44bffaf87515ae3ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floatStrength: 20

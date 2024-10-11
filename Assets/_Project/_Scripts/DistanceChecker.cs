@@ -7,11 +7,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class DistanceChecker : MonoBehaviour
+public class DistanceChecker : MonoBehaviour, IResettable
 {
     public TMP_Text text;
-    public string trackingID;
-    public float range;
+    public string trackingID = "MainCamera";
+    public float range = 1f;
 
     public UnityEvent OnInRange;
     public UnityEvent OnOutOfRange;
@@ -43,10 +43,10 @@ public class DistanceChecker : MonoBehaviour
             _isInRange = true;
             OnInRange.Invoke();
         }
-        else if (currentDistance > range && _isInRange)
-        {
-            _isInRange = false;
-            OnOutOfRange.Invoke();
-        }
+    }
+
+    public void OnReset()
+    {
+        _isInRange = false;
     }
 }

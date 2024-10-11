@@ -1,32 +1,29 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ShowcaseTransform : MonoBehaviour
 {
-    public string group = "Ground Image";
+    public ShowcaseTransformGroup transformGroup;
     public GameObject root;
-    public GameObject highlightMaterial;
-    
+
+    private void Awake()
+    {
+        transformGroup.OnHeightChanged += SetHeight;
+        transformGroup.OnScaleChanged += SetScale;
+    }
+
+    private void OnDestroy()
+    {
+        transformGroup.OnHeightChanged -= SetHeight;
+        transformGroup.OnScaleChanged -= SetScale;
+    }
+
     private void Start()
     {
-        SetHeight(ShowcaseTransformManipulator.Instance.GetHeight(group));
-        SetScale(ShowcaseTransformManipulator.Instance.GetHeight(group));
-    }
-
-    void Awake()
-    {
-        highlightMaterial.SetActive(false);
-    }
-    
-    public void OnSelect()
-    {
-        highlightMaterial.SetActive(true);
-    }
-
-    public void OnDeselect()
-    {
-        highlightMaterial.SetActive(false);
+        SetHeight(transformGroup.Height);
+        SetScale(transformGroup.Scale);
     }
     
     public void SetHeight(float value)
